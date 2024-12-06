@@ -126,6 +126,12 @@ class Coordinate:
     def __str__(self) -> str:
         return f"({self.x}, {self.y})"
 
+    def __key(self):
+        return self.x, self.y
+
+    def __hash__(self):
+        return hash(self.__key())
+
 
 # Initialize static members
 Coordinate.init_static()
