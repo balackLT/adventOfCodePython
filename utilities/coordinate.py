@@ -1,4 +1,5 @@
-﻿from typing import Iterable, List
+﻿from collections import defaultdict
+from typing import Iterable, List
 from math import atan2, pi
 from enum import Enum, auto
 
@@ -106,9 +107,7 @@ class Coordinate:
             return Coordinate(0, -1)
         return Coordinate(0, 0)
 
-    def __eq__(self, other: object) -> bool:
-        if not isinstance(other, Coordinate):
-            return False
+    def __eq__(self, other: 'Coordinate') -> bool:
         return self.x == other.x and self.y == other.y
 
     def __add__(self, other: 'Coordinate') -> 'Coordinate':
@@ -132,6 +131,28 @@ class Coordinate:
     def __hash__(self):
         return hash(self.__key())
 
-
 # Initialize static members
 Coordinate.init_static()
+
+def print_map(coordinate_map: dict[Coordinate, str]):
+    min_x = min(coord.x for coord in coordinate_map.keys())
+    max_x = max(coord.x for coord in coordinate_map.keys())
+    min_y = min(coord.y for coord in coordinate_map.keys())
+    max_y = max(coord.y for coord in coordinate_map.keys())
+
+    for y in range(min_y, max_y + 1):
+        for x in range(min_x, max_x + 1):
+            print(coordinate_map[Coordinate(x, y)], end='')
+        print()
+
+def extract_map(file_content: list[str], default_char: str) -> dict[Coordinate, str]:
+    coordinate_map = defaultdict(lambda: default_char)
+    y = 0
+    for line in file_content:
+        x = 0
+        for pixel in line:
+            coord = Coordinate(x, y)
+            coordinate_map[coord] = pixel
+            x += 1
+        y += 1
+    return coordinate_map
